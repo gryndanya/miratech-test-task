@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +53,7 @@ public class TaskController {
             description = "Endpoint to create task")
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto, BindingResult bindingResult) {
+    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(taskDto));
     }
 
@@ -68,10 +67,12 @@ public class TaskController {
                     description = "Invalid id and task not founded")
     })
     @PutMapping("tasks/{id}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable("id") Long taskId,@Valid @RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> updateTask(@PathVariable("id") Long taskId,
+                                              @Valid @RequestBody TaskDto taskDto) {
         if (taskDto == null) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(taskService.updateTask(taskId, taskDto));
     }
 
