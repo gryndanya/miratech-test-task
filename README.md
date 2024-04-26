@@ -60,12 +60,12 @@ Only tasks with matching attributes are returned in response
 To install and run the application locally, follow these steps:
 
 1. Clone this repository to your local machine.
-2. Navigate to the project directory.
-3. Open cmd in project root directory.
-4. Provide env variables as:
+2. Open cmd in project root directory.
+3. Provide env variables as:
     - DB_HOST=your db host (default: localhost)
     - DB_USER=your db user (default: postgres)
     - DB_PASSWORD=your db password (default: postgres)
+4. Navigate to the project directory.
 5. Run the Maven command to build the project. (`mvn clean install`)
 6. Run the application using Maven.(`java -jar target/miratech-test-task-0.0.1-SNAPSHOT.jar` or `mvn spring-boot:run`)
 7. The application will start running on `http://localhost:8080`
