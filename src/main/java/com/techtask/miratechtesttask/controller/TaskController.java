@@ -1,6 +1,7 @@
 package com.techtask.miratechtesttask.controller;
 
 import com.techtask.miratechtesttask.dto.TaskDto;
+import com.techtask.miratechtesttask.exception.BadRequestException;
 import com.techtask.miratechtesttask.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +55,11 @@ public class TaskController {
             description = "Endpoint to create task")
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            throw new BadRequestException("Validation error: " + bindingResult.getFieldError());
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(taskDto));
     }
 
@@ -68,9 +74,11 @@ public class TaskController {
     })
     @PutMapping("tasks/{id}")
     public ResponseEntity<TaskDto> updateTask(@PathVariable("id") Long taskId,
-                                              @Valid @RequestBody TaskDto taskDto) {
-        if (taskDto == null) {
-            return ResponseEntity.notFound().build();
+                                              @Valid @RequestBody TaskDto taskDto,
+                                              BindingResult bindingResult) {
+
+        if(taskDto == null || bindingResult.hasErrors()) {
+            throw new BadRequestException("Validation error: " + bindingResult.getFieldError());
         }
 
         return ResponseEntity.ok(taskService.updateTask(taskId, taskDto));
