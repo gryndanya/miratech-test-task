@@ -4,12 +4,10 @@ import com.techtask.miratechtesttask.dto.TaskDto;
 import com.techtask.miratechtesttask.exception.TaskNotFoundException;
 import com.techtask.miratechtesttask.mapper.TaskMapper;
 import com.techtask.miratechtesttask.mapper.TaskStatusMapper;
-import com.techtask.miratechtesttask.model.entity.Task;
 import com.techtask.miratechtesttask.repository.TaskRepository;
 import com.techtask.miratechtesttask.service.TaskService;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +22,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskStatusMapper taskStatusMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaskDto> getAllTasks() {
         return taskRepository.findAll()
                 .stream()
@@ -32,6 +31,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TaskDto getTaskById(Long id) {
         return taskRepository.findById(id)
                 .map(taskMapper::mapToTaskDto)
@@ -39,11 +39,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskDto createTask(TaskDto dto) {
         return taskMapper.mapToTaskDto(taskRepository.save(taskMapper.mapToTask(dto)));
     }
 
     @Override
+    @Transactional
     public TaskDto updateTask(Long id, TaskDto updatedTask) {
         return taskRepository.findById(id)
                 .map(currentTask -> {
@@ -57,6 +59,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void deleteTaskById(Long id) {
         taskRepository.findById(id)
                 .ifPresentOrElse(taskRepository::delete,
