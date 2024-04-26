@@ -4,13 +4,18 @@ import com.techtask.miratechtesttask.dto.TaskDto;
 import com.techtask.miratechtesttask.exception.TaskNotFoundException;
 import com.techtask.miratechtesttask.mapper.TaskMapper;
 import com.techtask.miratechtesttask.mapper.TaskStatusMapper;
+import com.techtask.miratechtesttask.model.entity.Task;
+import com.techtask.miratechtesttask.model.enums.TaskStatus;
 import com.techtask.miratechtesttask.repository.TaskRepository;
 import com.techtask.miratechtesttask.service.TaskService;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -21,11 +26,22 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
     private final TaskStatusMapper taskStatusMapper;
 
+
     @Override
     @Transactional(readOnly = true)
-    public List<TaskDto> getAllTasks() {
-        return taskRepository.findAll()
-                .stream()
+    public List<TaskDto> getAllTasks(String title, String status) {
+
+        List<Task> tasks;
+        if(!Objects.equals(title, null) && !Objects.equals(status, null)){
+            tasks = taskRepository.findAll(byTitleAndStatus(title, taskStatusMapper.mapToTaskStatus(status)));
+        }else if(!Objects.equals(title, null)){
+            tasks = taskRepository.findAll(byTitle(title));
+        }else if(!Objects.equals(status, null)){
+            tasks = taskRepository.findAll(byStatus(taskStatusMapper.mapToTaskStatus(status)));
+        }else{
+            tasks = taskRepository.findAll();
+        }
+        return tasks.stream()
                 .map(taskMapper::mapToTaskDto)
                 .toList();
     }
@@ -67,7 +83,24 @@ public class TaskServiceImpl implements TaskService {
                         throw new TaskNotFoundException("Task with id = " + id + " not found.");
                     }
                 );
-
-
     }
+
+    public static Specification<Task> byTitleAndStatus(String title, TaskStatus status) {
+        return (root, query, criteriaBuilder) -> {
+            Predicate predicateTitle = criteriaBuilder.equal(root.get("title"), title);
+            Predicate predicateDescription = criteriaBuilder.equal(root.get("description"), status);
+            return criteriaBuilder.and(predicateTitle, predicateDescription);
+        };
+    }
+
+    static Specification<Task> byStatus(TaskStatus status) {
+        return Specification.where((root, query, builder) ->
+                builder.equal(root.get("status"), status));
+    }
+
+    static Specification<Task> byTitle(String title) {
+        return Specification.where((root, query, builder) ->
+                builder.equal(root.get("title"), title));
+    }
+
 }

@@ -4,9 +4,11 @@ import com.techtask.miratechtesttask.annotation.TaskStatusValidation;
 import com.techtask.miratechtesttask.model.enums.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class TaskDto {
 
     @NotBlank(message = "Title must not be null")

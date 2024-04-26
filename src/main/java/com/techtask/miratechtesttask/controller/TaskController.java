@@ -31,8 +31,9 @@ public class TaskController {
                     ,description = "Endpoint to get all current tasks")})
     @GetMapping("/tasks")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<TaskDto>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<List<TaskDto>> getAllTasks(@RequestParam(value = "title", required = false) String title,
+                                                     @RequestParam(value = "status", required = false) String status) {
+        return ResponseEntity.ok(taskService.getAllTasks(title, status));
     }
 
     @Operation(summary = "Get task by id")
