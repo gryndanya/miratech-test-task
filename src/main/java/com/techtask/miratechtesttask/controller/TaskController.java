@@ -55,8 +55,9 @@ public class TaskController {
             description = "Endpoint to create task")
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
+    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskDto taskDto,
+                                              BindingResult bindingResult) {
+        if(taskDto == null || bindingResult.hasErrors()) {
             throw new BadRequestException("Validation error: " + bindingResult.getFieldError());
         }
 
