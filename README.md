@@ -57,6 +57,18 @@ Only tasks with matching attributes are returned in response
 - PostgreSQL
 
 ## Installation
+To install and run the application locally, follow these steps:
+
+1. Clone this repository to your local machine.
+2. Navigate to the project directory.
+3. Open cmd in project root directory.
+4. Provide env variables as:
+    - DB_HOST=your db host (default: localhost)
+    - DB_USER=your db user (default: postgres)
+    - DB_PASSWORD=your db password (default: postgres)
+5. Run the Maven command to build the project. (`mvn clean install`)
+6. Run the application using Maven.(`java -jar target/miratech-test-task-0.0.1-SNAPSHOT.jar` or `mvn spring-boot:run`)
+7. The application will start running on `http://localhost:8080`
 
 ## API Documentation:
 ### Swagger
@@ -72,3 +84,12 @@ To access the Swagger documentation, follow these steps:
 
 ### API Requests
 
+> GET /tasks: Retrieve all tasks. `http://localhost:8080/tasks`
+> 
+> GET /tasks/:id: Retrieve a specific task by ID. `http://localhost:8080/tasks/{id}`
+> 
+> POST /tasks: Create a new task. `http://localhost:8080/tasks`
+> 
+> PUT /tasks/:id: Update an existing task by ID. `http://localhost:8080/tasks/{id}`
+> 
+> DELETE /tasks/:id: Delete a task by ID. `http://localhost:8080/tasks/{id}`
